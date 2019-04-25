@@ -11,6 +11,7 @@ import me.xdd.self.criminalintent.sqlite.CrimeDbSchema.CrimeTable;
  * 2、如果不存在，首先创建数据库，然后创建数据表并初始化数据
  * 3、如果存在，打开并确认表是否为最新
  * 4、如果是旧版本，就要先升级到最新版本
+ *
  * @author xuandong on 2019/4/19.
  */
 public class CrimeBaseHelper extends SQLiteOpenHelper {
@@ -22,17 +23,18 @@ public class CrimeBaseHelper extends SQLiteOpenHelper {
             CrimeTable.Cols.UUID + ", " +
             CrimeTable.Cols.TITLE + ", " +
             CrimeTable.Cols.DATE + ", " +
-            CrimeTable.Cols.SOLVED +","+
-            CrimeTable.Cols.SUSPECT+
+            CrimeTable.Cols.SOLVED + "," +
+            CrimeTable.Cols.SUSPECT + "," +
+            CrimeTable.Cols.MOBILE +
             ")";
-    public CrimeBaseHelper(Context context){
-        super(context,DATABASE_NAME,null,VERSION);
+
+    public CrimeBaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, VERSION);
     }
 
     public CrimeBaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
-
 
 
     @Override

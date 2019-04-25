@@ -12,6 +12,7 @@ public class Crime {
     private boolean mSolved;
     private Date mDate;
     private String mSuspect;
+    private String mobile;
     public Crime() {
         mId = UUID.randomUUID();
         mDate = new Date();
@@ -60,6 +61,14 @@ public class Crime {
 
     public void setSuspect(String suspect) {
         mSuspect = suspect;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 }
 

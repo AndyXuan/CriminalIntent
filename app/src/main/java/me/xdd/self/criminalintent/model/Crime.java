@@ -70,5 +70,9 @@ public class Crime {
     public void setMobile(String mobile) {
         this.mobile = mobile;
     }
+
+    public String getPhotoFilename(){
+        return "IMG_"+getId().toString() +".jpg";
+    }
 }
 

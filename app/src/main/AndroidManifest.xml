@@ -3,6 +3,9 @@
     package="me.xdd.self.criminalintent">
 
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-feature android:name="android.hardware.camera"
+        android:required="false"
+        />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,6 +24,15 @@
             android:parentActivityName=".CrimeListActivity">
 
         </activity>
+        <provider
+            android:authorities="me.xdd.self.criminalintent.fileprovider"
+            android:name="android.support.v4.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/files"/>
+        </provider>
     </application>
 
 </manifest>

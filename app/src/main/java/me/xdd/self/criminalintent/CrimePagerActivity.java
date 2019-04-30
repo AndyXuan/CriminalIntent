@@ -19,7 +19,7 @@ import me.xdd.self.criminalintent.fragment.CrimeFragment;
 import me.xdd.self.criminalintent.model.Crime;
 import me.xdd.self.criminalintent.model.CrimeLab;
 
-public class CrimePagerActivity extends AppCompatActivity {
+public class CrimePagerActivity extends AppCompatActivity implements CrimeFragment.Callbacks{
     private static final String EXTRA_CRIME_ID = "me.xdd.self.criminalintent.crime_id";
     private ViewPager mViewPager;
     private List<Crime> mCrimes;
@@ -67,4 +67,13 @@ public class CrimePagerActivity extends AppCompatActivity {
         return super.getParentActivityIntent();
     }
 
+    @Override
+    public void onCrimeUpdated(Crime crime) {
+
+    }
+
+    @Override
+    public void onCrimeDelete(Crime crime) {
+        finish();
+    }
 }

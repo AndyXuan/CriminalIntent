@@ -1,10 +1,13 @@
 package me.xdd.self.criminalintent;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+
+import com.umeng.message.PushAgent;
 
 /**
  * @author xuandong on 2019/4/11.
@@ -12,10 +15,18 @@ import android.support.v7.app.AppCompatActivity;
 public abstract class SingleFragmentActivity extends AppCompatActivity {
     protected abstract Fragment createFragment();
     protected Fragment mFragment;
+
+    //任何时候，该实现方法都应该返回有效的布局资源ID
+    @LayoutRes
+    protected int getLayoutResId(){
+        return R.layout.activity_fragment;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fragment);
+        PushAgent.getInstance(this).onAppStart();
+        setContentView(getLayoutResId());
         FragmentManager fm = getSupportFragmentManager();
         mFragment = fm.findFragmentById(R.id.fragment_container);
         if (mFragment == null){

@@ -1,5 +1,6 @@
 package me.xdd.self.criminalintent.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,6 +34,23 @@ public class CrimeListFragment extends Fragment {
     private CrimeAdapter mCrimeAdapter;
     private boolean mSubtitleVisible;
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
+    private Callbacks mCallbacks;
+    public interface Callbacks {
+        void onCrimeSelected(Crime crime);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,8 +95,10 @@ public class CrimeListFragment extends Fragment {
             case R.id.new_crime:
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
-                Intent intent = CrimePagerActivity.newIntent(getActivity(),crime.getId());
-                startActivity(intent);
+//                Intent intent = CrimePagerActivity.newIntent(getActivity(),crime.getId());
+//                startActivity(intent);
+                mCallbacks.onCrimeSelected(crime);
+                updateUI();
                 return true;
             case R.id.show_subtitle:
                 mSubtitleVisible = !mSubtitleVisible;
@@ -110,7 +130,7 @@ public class CrimeListFragment extends Fragment {
     }
 
 
-    private void updateUI() {
+    public void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
         if (mCrimeAdapter == null){
@@ -150,8 +170,9 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            startActivityForResult(CrimePagerActivity.newIntent(getActivity(),mCrime.getId()),10);
+            //startActivityForResult(CrimePagerActivity.newIntent(getActivity(),mCrime.getId()),10);
             //startActivity(CrimeActivity.newIntent(getActivity(),mCrime.getId()));
+            mCallbacks.onCrimeSelected(mCrime);
         }
     }
 

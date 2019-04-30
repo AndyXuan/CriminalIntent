@@ -2,6 +2,7 @@ package me.xdd.self.criminalintent.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -71,12 +72,30 @@ public class CrimeFragment extends Fragment {
     private ImageView mPhotoView;
     private ImageButton mPhotoButton;
     private Intent pickContact;
+    private Callbacks mCallbacks;
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_CRIME_ID, crimeId);
         CrimeFragment fragment = new CrimeFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public interface Callbacks{
+        void onCrimeUpdated(Crime crime);
+        void onCrimeDelete(Crime crime);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
     @Override
@@ -109,6 +128,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mCrime.setTitle(s.toString());
+                updateCrime();
             }
 
             @Override
@@ -137,6 +157,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
+                updateCrime();
             }
         });
 
@@ -289,7 +310,8 @@ public class CrimeFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.delete_crime:
                 CrimeLab.get(getActivity()).removeCrime(mCrime);
-                getActivity().finish();
+                mCallbacks.onCrimeDelete(mCrime);
+//                getActivity().finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -305,6 +327,7 @@ public class CrimeFragment extends Fragment {
         if (requestCode == REQUEST_DATE) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
+            updateCrime();
             updateDate();
         } else if (requestCode == REQUEST_CONTACT && data != null) {
             Uri contactUri = data.getData();
@@ -325,6 +348,7 @@ public class CrimeFragment extends Fragment {
                 c.moveToFirst();
                 String suspect = c.getString(0);
                 mCrime.setSuspect(suspect);
+                updateCrime();
                 mSuspectButton.setText(suspect);
 
                 String contactId = c.getString(1);
@@ -333,6 +357,7 @@ public class CrimeFragment extends Fragment {
                 if (phone.moveToNext()) {
                     String mPhone = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     mCrime.setMobile(mPhone);
+                    updateCrime();
                     mCallButton.setText("call:" + mPhone);
                     mCallButton.setEnabled(true);
                 }
@@ -345,6 +370,12 @@ public class CrimeFragment extends Fragment {
                     Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             updatePhotoView(mPhotoView.getWidth(),mPhotoView.getHeight());
         }
+    }
+
+
+    private void updateCrime() {
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+        mCallbacks.onCrimeUpdated(mCrime);
     }
 
     private void updateDate() {

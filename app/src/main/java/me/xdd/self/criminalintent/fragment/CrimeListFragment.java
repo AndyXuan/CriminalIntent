@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
 import java.util.List;
 
 import me.xdd.self.criminalintent.CrimePagerActivity;
@@ -161,10 +162,11 @@ public class CrimeListFragment extends Fragment {
         }
 
         public void bind(Crime crime) {
-            mTitleTextView.setText(crime.getTitle());
-            mDateTextView.setText(crime.getDate().toString());
-            mSolvedImageView.setVisibility(crime.isSolved()? View.VISIBLE:View.GONE);
             this.mCrime = crime;
+            mTitleTextView.setText(crime.getTitle());
+            mDateTextView.setText(android.text.format.DateFormat.format("yyyy-MM-dd HH:mm:ss",crime.getDate()));
+            mSolvedImageView.setVisibility(crime.isSolved()? View.VISIBLE:View.GONE);
+
         }
 
 
